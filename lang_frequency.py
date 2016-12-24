@@ -1,18 +1,36 @@
-# _*_ coding: cp866 _*_
-import string,sys
-if sys.argv[1]=="--help":
-    print("""Эта программа выводит 10 наиболее часто встречающихся слов в текстовом файле.
-В качестве параметра командной строки необходимо передать путь к файлу""")
-else:
-    strp=string.whitespace+string.punctuation+string.digits+"\"'"+'\u2013'
-    f=open(sys.argv[1],'r')
-    dic={}
-    for line in f:
+import collections,string,argparse,sys
+
+def loadData(filepath):
+    file=open(filepath,'r')
+    return file
+
+def getMostFrequentWords(text):
+    # симлволы, которые необходимо исключать из слов
+    strip_string_chars=string.whitespace+string.punctuation+string.digits
+    # символы, которые программа может воспринять как слова
+    bad_chars='–—'
+    collection=collections.Counter()
+    for line in text:
         for word in line.lower().split():
-            word=word.strip(strp)
-            if word:
-                dic[word]=dic.get(word,0)+1
-    f.close()
-    print("Итак, 10 наиболее популярных слов в файле ",sys.argv[1],':')
-    for i in sorted(list(dic.items()),key=lambda x: x[1],reverse=True)[:10]:
-        print (i[0]+' '+str(i[1]))
+            if not word in bad_chars:
+                collection[word.strip(strip_string_chars)]+=1
+    return collection.most_common(10)
+
+def printRezult(rezult):
+    for pair in rezult:
+        print (pair[0],pair[1])
+
+def createParser():
+    parser=argparse.ArgumentParser(prog='words counter',description="""
+    Эта программа возвращает 10 наиболе популярных слов в текстовом
+    файле. В качестве параметра file необходимо передавать путь к файлу""")
+    parser.add_argument('file')
+    return parser
+
+if __name__ == '__main__':
+    parser=createParser()
+    txt_file=parser.parse_args()
+    text=loadData(txt_file.file)
+    rezult=getMostFrequentWords(text)
+    print("Итак, 10 наиболее порулярных слов в файле",txt_file.file+':')
+    printRezult(rezult)
