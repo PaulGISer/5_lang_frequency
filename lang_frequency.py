@@ -1,4 +1,4 @@
-mport collections,string,argparse,sys
+import collections,string,argparse,sys
 
 def load_data(filepath):
     txtfile=open(filepath,'r')
