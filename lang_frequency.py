@@ -1,10 +1,10 @@
-import collections,string,argparse,sys
+mport collections,string,argparse,sys
 
-def loadData(filepath):
-    file=open(filepath,'r')
-    return file
+def load_data(filepath):
+    txtfile=open(filepath,'r')
+    return txtfile
 
-def getMostFrequentWords(text):
+def get_most_frequent_words(text):
     # симлволы, которые необходимо исключать из слов
     strip_string_chars=string.whitespace+string.punctuation+string.digits
     # символы, которые программа может воспринять как слова
@@ -16,21 +16,21 @@ def getMostFrequentWords(text):
                 collection[word.strip(strip_string_chars)]+=1
     return collection.most_common(10)
 
-def printRezult(rezult):
-    for pair in rezult:
-        print (pair[0],pair[1])
+def print_result(result):
+    for word_and_number in result:
+        print (word_and_number[0],word_and_number[1])
 
-def createParser():
+def create_parser():
     parser=argparse.ArgumentParser(prog='words counter',description="""
     Эта программа возвращает 10 наиболе популярных слов в текстовом
     файле. В качестве параметра file необходимо передавать путь к файлу""")
-    parser.add_argument('file')
+    parser.add_argument('textfile')
     return parser
 
 if __name__ == '__main__':
-    parser=createParser()
-    txt_file=parser.parse_args()
-    text=loadData(txt_file.file)
-    rezult=getMostFrequentWords(text)
-    print("Итак, 10 наиболее порулярных слов в файле",txt_file.file+':')
-    printRezult(rezult)
+    parser=create_parser()
+    arguments=parser.parse_args()
+    text=load_data(arguments.textfile)
+    result=get_most_frequent_words(text)
+    print("Итак, 10 наиболее порулярных слов в файле",arguments.textfile+':')
+    print_result(result)
